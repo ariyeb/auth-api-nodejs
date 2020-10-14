@@ -97,6 +97,16 @@ router.post("/users/logout", auth, async (req, res) => {
 	}
 });
 
+router.get("/users/new-token", auth, async (req, res) => {
+	try {
+		req.user.tokens = req.user.tokens.filter((tokenDoc) => tokenDoc.token !== req.token);
+		const token = await req.user.generateAuthToken();
+		res.send({ token });
+	} catch (err) {
+		res.status(500).send(err);
+	}
+});
+
 router.post("/users/logout-all", auth, async (req, res) => {
 	try {
 		req.user.tokens = [];
