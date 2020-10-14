@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const password = "mypassword123";
 
@@ -10,4 +11,23 @@ const hashPaswword = async (password) => {
 	console.log(isMatch);
 };
 
-hashPaswword(password).then();
+// hashPaswword(password).then();
+
+const func = () => {
+	const token = jwt.sign(
+		{
+			_id: "kbjkbjklbjklbkbklbjkl",
+		},
+		"thisismysecret",
+		{
+			expiresIn: "6h",
+		}
+	);
+
+	console.log(token);
+
+	const data = jwt.verify(token, "thisismsecret");
+	console.log(data);
+};
+
+func();
