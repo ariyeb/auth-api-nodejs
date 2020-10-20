@@ -87,4 +87,43 @@ router.patch("/tasks/edit", auth, async (req, res) => {
 	}
 });
 
+// צרו ראוט שדרכו המשתמש מקבל את כל המשימות שיצר
+// השתמשו בשדה הוירטואלי של המשימות
+
+router.get("/tasks/all", auth, async (req, res) => {
+	const match = {};
+	const options = {};
+
+	if (req.query.completed) {
+		match.completed = req.query.completed === "true";
+	}
+
+	if (req.query.limit) {
+		options.limit = parseInt(req.query.limit);
+	}
+
+	if (req.query.skip) {
+		options.skip = parseInt(req.query.skip);
+	}
+
+	if (req.query.sortDate) {
+		options.sort = {};
+		options.sort.createdAt = req.query.sortDate === "desc" ? -1 : 1; // asc
+	}
+
+	try {
+		// await req.user.populate("tasks").execPopulate();
+		await req.user
+			.populate({
+				path: "tasks",
+				match,
+				options,
+			})
+			.execPopulate();
+		res.send(req.user.tasks);
+	} catch (err) {
+		res.status(500).send(err);
+	}
+});
+
 module.exports = router;
