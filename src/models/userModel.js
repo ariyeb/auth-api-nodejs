@@ -110,6 +110,12 @@ userSchema.methods.toJSON = function () {
 	return userObj;
 };
 
+userSchema.virtual("tasks", {
+	ref: "Task",
+	localField: "_id",
+	foreignField: "user",
+});
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
